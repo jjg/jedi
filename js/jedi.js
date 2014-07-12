@@ -1,7 +1,7 @@
 function loadFile(filename, cb){
 
 	var fileReq = new XMLHttpRequest();
-	fileReq.open('GET', 'http://localhost:1313/' + filename, true);
+	fileReq.open('GET', filename, true);
 	fileReq.onreadystatechange = fileReqRes;
 	fileReq.send();
 
@@ -19,7 +19,7 @@ function loadFile(filename, cb){
 function saveFile(filename, contents, cb){
 
 	var saveFileReq = new XMLHttpRequest();
-	saveFileReq.open('POST', 'http://localhost:1313/' + filename, true);
+	saveFileReq.open('POST', filename, true);
 	saveFileReq.onreadystatechange = saveFileReqRes;
 	saveFileReq.send(contents);
 
