@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>jedi</title>
+		<script src="ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jedi.js" type="text/javascript" charset="utf-8"></script>
+		<style>
+			#editor {
+				width:800px;
+				height:600px;
+			}
+			#filename {
+				width:600px;
+			}
+		</style>
+	</head>
+	<body>
+
+		<input id="filename" type="text"><button id="load" onClick="loadClick()">load</button>&nbsp;<button id="save" onClick="saveClick()">save</button>
+
+		<div id="editor"></div>
+	
+		<script>
+
+			// init editor
+			var editor = ace.edit('editor');
+			editor.setTheme('ace/theme/monokai');
+			editor.getSession().setMode('ace/mode/javascript');
+
+			// control event handlers
+			function loadClick(){
+
+				var fileToLoad = document.getElementById('filename').value;
+
+				loadFile(fileToLoad, function(contents){
+					editor.setValue(contents);
+				});
+
+			}
+
+			function saveClick(){
+		
+				var fileToSave = document.getElementById('filename').value;
+				
+				saveFile(fileToSave, editor.getValue(), function(result){
+
+					alert(result);
+				
+				});
+			}
+
+		</script>
+
+	</body>
+</html>
