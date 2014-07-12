@@ -39,6 +39,30 @@
 
 				var fileToLoad = document.getElementById('filename').value;
 
+				// try and set the correct editor mode
+				editMode = 'text';
+				
+				switch(fileToLoad.substring(fileToLoad.lastIndexOf('.') + 1)){
+				
+					case 'html':
+						editMode = 'html';
+						break;
+						
+					case 'js':
+						editMode = 'javascript';
+						break;
+						
+					case 'json':
+						editMode = 'json';
+						break;
+						
+					default:
+						editMode = 'text';
+				}
+				
+				editModeString = 'ace/mode/' + editMode;
+				editor.getSession().setMode(editModeString);
+					
 				loadFile(fileToLoad, function(contents){
 					editor.setValue(contents);
 					editor.gotoLine(1);
