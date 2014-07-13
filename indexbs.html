@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>jedi bs</title>
+    
+    <!-- freaking jquery -->
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+	
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+	
+	<script src="ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/jedi.js" type="text/javascript" charset="utf-8"></script>
+
+	<style>
+		#editor {
+			height:600px;
+		}
+		#filename {
+			width:500px;
+		}
+	</style>
+	
+  </head>
+
+  <body role="document">
+
+		<!-- Fixed navbar -->
+		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<div class="container">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">jedi</a>
+				</div>
+				<div class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">File <span class="caret"></span></a>
+							<ul class="dropdown-menu" role="menu">
+								<li><a href="#" data-toggle="modal" data-target="#openModal">New</a></li>
+								<li><a href="#" data-toggle="modal" data-target="#openModal">Open</a></li>
+								<li><a onClick="saveClick()" href="#">Save</a></li>
+								<li class="divider"></li>
+								<li><a href="#">Quit</a></li>
+							</ul>
+						</li>
+					</ul>
+					<p id="filenameDisplay" class="navbar-text navbar-right"></p>
+					<p id="statusDisplay" class="navbar-text navbar-right">ready</p>
+				</div><!--/.nav-collapse -->
+			</div>
+		</div>
+		
+		<div class="container" role="main" style="margin-top:60px;padding:3px;">
+		
+			<div id="editor" class="jumbotron"></div>
+		
+		</div>
+		
+		<!-- open file modal -->
+		<div id="openModal" class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h4 class="modal-title">Open File</h4>
+					</div>
+					<div class="modal-body">
+						<p><input id="filename" type="text" class="form-control" placeholder="file to open"></p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						<button type="button" class="btn btn-primary"  data-dismiss="modal" onClick="loadClick()">OK</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+		
+		<script>
+
+			// init editor
+			var editor = ace.edit('editor');
+			editor.setTheme('ace/theme/clouds');
+			editor.getSession().setMode('ace/mode/text');
+			editor.setHighlightActiveLine(false);
+			editor.setShowPrintMargin(false);
+			editor.getSession().setUseSoftTabs(false);
+			editor.getSession().setUseWrapMode(true);
+			
+			// grab ui controls
+			var statusDisplay = document.getElementById('statusDisplay');
+			var filenameDisplay = document.getElementById('filenameDisplay');
+			
+			// control event handlers
+			function loadClick(){
+
+				var fileToLoad = document.getElementById('filename').value;
+				
+				statusDisplay.innerHTML = "loading";
+				filenameDisplay.innerHTML = fileToLoad;
+				
+				// try and set the correct editor mode
+				editMode = 'text';
+				
+				switch(fileToLoad.substring(fileToLoad.lastIndexOf('.') + 1)){
+				
+					case 'html':
+						editMode = 'html';
+						break;
+						
+					case 'js':
+						editMode = 'javascript';
+						break;
+						
+					case 'json':
+						editMode = 'json';
+						break;
+						
+					default:
+						editMode = 'text';
+				}
+				
+				editModeString = 'ace/mode/' + editMode;
+				editor.getSession().setMode(editModeString);
+					
+				loadFile(fileToLoad, function(contents){
+					
+					if(contents){
+						editor.setValue(contents);
+						editor.gotoLine(1);
+					
+						statusDisplay.innerHTML = 'loaded'
+						
+					} else {
+						statusDisplay.innerHTML = 'error loading';
+					}
+				});
+
+			}
+
+			function saveClick(){
+			
+				statusDisplay.innerHTML = 'saving';
+					
+				var fileToSave = document.getElementById('filename').value;
+				
+				saveFile(fileToSave, editor.getValue(), function(result){
+					
+					if(result){
+						statusDisplay.innerHTML = 'changes saved to';
+					} else {
+						statusDisplay.innerHTML = 'error saving changes to';
+						alert('Error saving file');
+					}
+				
+				});
+			}
+
+		</script>
+	</body>
+</html>
+
