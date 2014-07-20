@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="../../favicon.ico">
+    <link rel="icon" href="favicon.ico">
 
     <title>jedi</title>
     
@@ -58,6 +58,13 @@
 								<li><a href="#">Quit</a></li>
 							</ul>
 						</li>
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">Tools <span class="caret"></span></a>
+							<ul class="dropdown-menu" role="menu">
+								<li><a href="#" onClick="viewAsHtmlClick()">View as HTML</a></li>
+								<li><a href="#" onClick="viewAsGraphClick()">View as Graph</a></li>
+							</ul>
+						</li>
 					</ul>
 					<p id="filenameDisplay" class="navbar-text navbar-right"></p>
 					<p id="statusDisplay" class="navbar-text navbar-right">ready</p>
@@ -86,9 +93,9 @@
 						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 						<button type="button" class="btn btn-primary"  data-dismiss="modal" onClick="loadClick()">OK</button>
 					</div>
-				</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
-		</div><!-- /.modal -->
+				</div>
+			</div>
+		</div>
 		
 		<!-- save file modal -->
 		<div id="saveModal" class="modal fade">
@@ -99,15 +106,15 @@
 						<h4 class="modal-title">Save File</h4>
 					</div>
 					<div class="modal-body">
-						<p><input id="savefilename" type="text" class="form-control" placeholder="file to open"></p>
+						<p><input id="savefilename" type="text" class="form-control" placeholder="file to save"></p>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 						<button type="button" class="btn btn-primary"  data-dismiss="modal" onClick="saveClick()">OK</button>
 					</div>
-				</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
-		</div><!-- /.modal -->
+				</div>
+			</div>
+		</div>
 		
 		<script>
 
@@ -134,6 +141,9 @@
 				
 				statusDisplay.innerHTML = "loading";
 				filenameDisplay.innerHTML = filename;
+				
+				// set the window title too so our tabs are more useful
+				document.title = 'jedi - ' + filename;
 				
 				// try and set the correct editor mode
 				editMode = 'text';
@@ -177,14 +187,19 @@
 			function saveClick(){
 			
 				statusDisplay.innerHTML = 'saving';
-					
-				filename = document.getElementById('savefilename').value;
 				
-				if(filename.length > 1){
+				if(document.getElementById('savefilename').value.length > 1){
+					filename = document.getElementById('savefilename').value;
+				}
+				
+				if(filename && filename.length > 1){
 				
 					saveFile(filename, editor.getValue(), function(result){
 						
 						filenameDisplay.innerHTML = filename;
+						
+						// set the window title too so our tabs are more useful
+						document.title = 'jedi - ' + filename;
 						
 						if(result){
 							statusDisplay.innerHTML = 'changes saved to';
@@ -201,8 +216,22 @@
 					
 				}
 			}
+			
+			function viewAsHtmlClick(){
+			
+				var htmlUrl = filename;
+				
+				window.open(htmlUrl, '_blank');
+				
+			}
+			
+			function viewAsGraphClick(){
+				
+				var graphUrl = '/p/jjg/tools/vizviewer.html?file=' + filename;
+				
+				window.open(graphUrl, '_blank');
+			}
 
 		</script>
 	</body>
 </html>
-
